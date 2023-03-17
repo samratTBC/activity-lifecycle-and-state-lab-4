@@ -1,10 +1,10 @@
 package com.example.activitylifecycleandstatelab4.Model;
 
-public class Desert {
+public class Dessert {
 
     private int imageId, price, startProductionAmount;
 
-    public Desert(int imageId, int price, int startProductionAmount) {
+    public Dessert(int imageId, int price, int startProductionAmount) {
         this.imageId = imageId;
         this.price = price;
         this.startProductionAmount = startProductionAmount;
