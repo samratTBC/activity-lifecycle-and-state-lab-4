@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,20 +23,34 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final static String TAG ="MAIN_ACTIVITY";
+
+    private final static String KEY_REVENUE ="revenue_key";
+    private final static String KEY_DESSERT_SOLD ="dessert_sold_key";
+
     private int revenue = 0;
     private int dessertSold =0;
 
-    private List<Dessert> dessertList;
+    private List<Dessert> dessertList = returnDesertList();
 
     private Dessert currentDessert;
 
     private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(savedInstanceState!=null)
+        {
+            revenue=savedInstanceState.getInt(KEY_REVENUE,0);
+            dessertSold=savedInstanceState.getInt(KEY_DESSERT_SOLD, 0);
+            showCurrentDessert();
+        }
+        Log.d(TAG, "onCreate Called. ");
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        dessertList = returnDesertList();
         currentDessert = dessertList.get(0);
 
         binding.dessertButton.setOnClickListener(new View.OnClickListener() {
@@ -51,6 +66,52 @@ public class MainActivity extends AppCompatActivity {
         binding.dessertButton.setImageResource(currentDessert.getImageId());
 
 
+        setTitle(R.string.title);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState Called");
+
+        outState.putInt(KEY_REVENUE, revenue);
+        outState.putInt(KEY_DESSERT_SOLD, dessertSold);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart called.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume called.");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause called.");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop called.");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy called.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart called.");
     }
 
     private void onDessertClicked()
@@ -90,8 +151,13 @@ public class MainActivity extends AppCompatActivity {
         Dessert newDessert = dessertList.get(0);
         for(Dessert dessert : dessertList)
         {
-            if(dessertSold>= currentDessert.getStartProductionAmount())
+            if(dessertSold>= dessert.getStartProductionAmount())
                 newDessert=dessert;
+            else break;
+        }
+
+        if(newDessert!=currentDessert){
+            currentDessert = newDessert;
             binding.dessertButton.setImageResource(newDessert.getImageId());
         }
 
