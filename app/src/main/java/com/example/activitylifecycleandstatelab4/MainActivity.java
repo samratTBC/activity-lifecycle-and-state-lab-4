@@ -33,25 +33,14 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Dessert> dessertList = returnDesertList();
 
-    private Dessert currentDessert;
+    private Dessert currentDessert = dessertList.get(0);
 
     private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if(savedInstanceState!=null)
-        {
-            revenue=savedInstanceState.getInt(KEY_REVENUE,0);
-            dessertSold=savedInstanceState.getInt(KEY_DESSERT_SOLD, 0);
-            showCurrentDessert();
-        }
-        Log.d(TAG, "onCreate Called. ");
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-
-        currentDessert = dessertList.get(0);
 
         binding.dessertButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,16 +48,34 @@ public class MainActivity extends AppCompatActivity {
                 onDessertClicked();
             }
         });
+        /**
+         * Once configuration change happens, or any event that triggers the execution of onCreate() method happens
+         * if onSavedInstance method is overwritten and value is provided then, retrieval can be done via the provided
+         * block of code.
+         */
+        if(savedInstanceState!=null)
+        {
+            Log.d(TAG, "onCreate: I'm in");
+            revenue=savedInstanceState.getInt(KEY_REVENUE,0);
+            dessertSold=savedInstanceState.getInt(KEY_DESSERT_SOLD, 0);
+            showCurrentDessert();
+        }
+        Log.d(TAG, "onCreate Called. ");
 
         binding.setRevenue(revenue);
         binding.setAmountSold(dessertSold);
 
         binding.dessertButton.setImageResource(currentDessert.getImageId());
-
-
         setTitle(R.string.title);
     }
 
+    /**
+     *
+     * @param outState : Bundle that stores value for later retrieval.
+     * Function called if configuration changes happens which redraws the entire layout
+     * also calling the onCreate method once again.
+     *
+     */
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -78,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         outState.putInt(KEY_DESSERT_SOLD, dessertSold);
     }
 
+
+    /**
+     * Life cycle methods.
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -114,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "onRestart called.");
     }
 
+    /**
+     * To increase the textView of revenue and dessertSold
+     */
     private void onDessertClicked()
     {
         revenue+=currentDessert.getPrice();
@@ -126,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Menu methods
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
@@ -146,6 +163,28 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //implicit intent passing for sharing.
+    public void onShare()
+    {
+        Intent shareIntent = ShareCompat.IntentBuilder.from(this)
+                .setText(getString(R.string.share_text, dessertSold, revenue))
+                .setType("text/plain")
+                .getIntent();
+
+        try{
+            startActivity(shareIntent);
+        }catch(ActivityNotFoundException exc)
+        {
+            Toast.makeText(MainActivity.this, "Sharing not available.", Toast.LENGTH_SHORT);
+        }
+    }
+
+
+    /*
+    * To show which dessert to show.
+    *
+    */
+
     private void showCurrentDessert(){
 
         Dessert newDessert = dessertList.get(0);
@@ -164,22 +203,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void onShare()
-    {
-        Intent shareIntent = ShareCompat.IntentBuilder.from(this)
-                .setText(getString(R.string.share_text, dessertSold, revenue))
-                .setType("text/plain")
-                .getIntent();
-
-                try{
-                    startActivity(shareIntent);
-                }catch(ActivityNotFoundException exc)
-                {
-                    Toast.makeText(MainActivity.this, "Sharing not available.", Toast.LENGTH_SHORT);
-                }
-    }
 
 
+    //Returns the list of desserts.
     private List<Dessert> returnDesertList()
     {
         List<Dessert> dessertList = new ArrayList<Dessert>();

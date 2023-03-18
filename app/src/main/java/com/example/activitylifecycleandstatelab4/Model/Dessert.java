@@ -1,5 +1,9 @@
 package com.example.activitylifecycleandstatelab4.Model;
 
+
+/**
+ * Model class with accessors and mutators for Dessert class.
+ */
 public class Dessert {
 
     private int imageId, price, startProductionAmount;
