@@ -18,4 +18,4 @@ key value pair which later can be retrieved in onCreate() function.
 # Working of the Activity application:
 
 
-![desert](https://user-images.githubusercontent.com/110808053/226163477-a404f378-b333-47bb-b86d-84d8fcdd5824.gif)
+![dessert2](https://user-images.githubusercontent.com/110808053/226163584-19d118b2-d32a-41fe-ac61-ccba0a1722b1.gif)
